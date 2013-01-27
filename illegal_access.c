@@ -8,7 +8,8 @@ int main()
 //@ requires true;
 //@ ensures true;
 {
-    struct account *myAccount = (struct account *)malloc(sizeof(struct account));
+    struct account myLocalAccount;
+    struct account *myAccount = &myLocalAccount;
     if (myAccount == 0) { 
         abort();
     }
