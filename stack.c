@@ -101,7 +101,16 @@ void stack_dispose(struct stack *stack)
     //@ ensures true;
 {
     //@ open stack(stack, _);
-    node_dispose(stack->head);
+    struct node *node = stack->head; 
+    while (node != 0)
+        //@ invariant node(node, _);
+    {
+        //@ open node(node, _);
+        struct node *next = node->next;
+        free(node);
+        node = next;
+    }
+    //@ open node(0, _);
     free(stack);
 }
 
@@ -127,6 +136,19 @@ int stack_get_sum(struct stack *stack)
     int result = node_get_sum(stack->head); 
     //@ close stack(stack, count);
     return result;
+}
+
+void stack_popn(struct stack *stack, int n)
+    //@ requires stack(stack, ?count) &*& 0 <= n &*& n <= count;
+    //@ ensures stack(stack, count - n);
+{
+    int i = 0;
+    while (i < n) 
+        //@ invariant stack(stack, count - i) &*& i <= n;
+    {
+        stack_pop(stack);
+        i++;
+    }
 }
 
 int main()
